@@ -11,6 +11,9 @@ use rust_os::println;
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use rust_os::memory;
+    use x86_64::{structures::paging::Translate, VirtAddr};
+
     // this function is the entry point, since the linker looks for a function
     // named `_start` by default
     println!("Hello World{}", "!");
@@ -18,9 +21,20 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     rust_os::init();
     x86_64::instructions::interrupts::int3();
 
-    let ptr = 0xdeadbeaf as *mut u32;
-    unsafe {
-        *ptr = 42;
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mapper = unsafe { memory::init(phys_mem_offset) };
+
+    let addresses = [
+        0xb8000,        
+        0x201008,
+        0x0100_0020_1a10,
+        boot_info.physical_memory_offset,
+    ];
+
+    for &address in &addresses {
+        let virt = VirtAddr::new(address);
+        let phys = mapper.translate_addr(virt);
+        println!("{:?} -> {:?}", virt, phys);
     }
 
     #[cfg(test)]
