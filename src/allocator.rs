@@ -83,7 +83,13 @@ fn align_up(addr: usize, align: usize) -> usize {
 }
 
 // bump allocator
-use bump::BumpAllocator;
+// use bump::BumpAllocator;
+
+// #[global_allocator]
+// static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
+
+// linked-list allocator
+use linked_list::LinkedListAllocator;
 
 #[global_allocator]
-static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
+static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
