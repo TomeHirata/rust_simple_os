@@ -12,7 +12,7 @@ use core::panic::PanicInfo;
 use rust_os::println;
 
 use rust_os::task::keyboard;
-use rust_os::task::{simple_executor::SimpleExecutor, Task};
+use rust_os::task::{executor::Executor, simple_executor::SimpleExecutor, Task};
 
 entry_point!(kernel_main);
 
@@ -60,7 +60,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
         Rc::strong_count(&cloned_reference)
     );
 
-    let mut executor = SimpleExecutor::new();
+    let mut executor = Executor::new();
     executor.spawn(Task::new(example_task()));
     executor.spawn(Task::new(keyboard::print_keypresses()));
     executor.run();
