@@ -11,6 +11,7 @@ use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use rust_os::println;
 
+use rust_os::task::keyboard;
 use rust_os::task::{simple_executor::SimpleExecutor, Task};
 
 entry_point!(kernel_main);
@@ -61,6 +62,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     let mut executor = SimpleExecutor::new();
     executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::print_keypresses()));
     executor.run();
 
     #[cfg(test)]
