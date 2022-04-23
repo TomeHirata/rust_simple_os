@@ -8,6 +8,7 @@ use x86_64::{
 };
 
 pub mod bump;
+pub mod fixed_size_block;
 pub mod linked_list;
 
 pub struct Dummy;
@@ -89,7 +90,13 @@ fn align_up(addr: usize, align: usize) -> usize {
 // static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
 
 // linked-list allocator
-use linked_list::LinkedListAllocator;
+// use linked_list::LinkedListAllocator;
+
+// #[global_allocator]
+// static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
+
+// fixed_size_block
+use fixed_size_block::FixedSizeBlockAllocator;
 
 #[global_allocator]
-static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
+static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
